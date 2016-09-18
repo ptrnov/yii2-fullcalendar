@@ -30,6 +30,7 @@ class FullcalendarScheduler extends \yii\base\Widget
 		'eventDropUrl'=>'',			//@var string url controler save drop move select.
 		'events' =>[],				//@var array  Array containing the events, can be JSON array,PHP array or URL that returns an array containing JSON events
 		'resources'=>[],			//@var array  Array containing the resources.
+		'eventSelectUrl'=>[],		//@var string url controler select.
 	];
 	
 	/*JS google Calendar*/
