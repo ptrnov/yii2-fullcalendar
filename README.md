@@ -7,13 +7,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 To install, either run
 
 ```
-php composer.phar require --prefer-dist ptrnov/yii2-fullcalendar "*"
+php composer.phar require --prefer-dist ptrnov/yii2-scheduler-fullcalendar "*"
 ```
 
 or add
 
 ```
-"ptrnov/yii2-fullcalendar": "*"
+"ptrnov/yii2-scheduler-fullcalendar": "*"
 ```
 
 to the ```require``` section of your `composer.json` file.
