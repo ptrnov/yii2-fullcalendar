@@ -14,7 +14,7 @@ class CoreAsset extends \yii\web\AssetBundle
 	 * If this is true, the language js files will be determined based on the actual usage of [[DatePicker]]
 	 * and its language settings. If this is false, you should explicitly specify the language js files via [[js]].
 	 */
-	public $autoGenerate = true;
+	//public $autoGenerate = true;
 	/** @var  array Required CSS files for the fullcalendar */
 	public $css = [
 		'css/cupertino/jquery-ui.min.css',

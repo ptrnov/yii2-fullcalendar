@@ -48,6 +48,16 @@ See the demos/ folder for all the examples.
 			]);
 		}
 		
+		public function actionDropChild($id,$start,$end){
+			echo "ID=".$id." START=".$start." EBD=".$end;
+			//$model = Pilotproject::findOne(['ID'=>$id]);
+
+			//$model->PLAN_DATE1 = $start;
+			//$model->PLAN_DATE2 = $end;
+
+		   // $model->save();
+		}
+		
 		public function actionEventCalendarSchedule()
 		{
 			$aryEvent=[
@@ -128,7 +138,6 @@ See the demos/ folder for all the examples.
 				*/
 				'id' => 'modal-select',											//set it, if used FullcalendarScheduler more the one on page.
 				'id_content'=>'modalContent',									//set it, if used FullcalendarScheduler more the one on page.
-				'url'=>'/test/form',											//should be set "your Controller link" to get(start,end) from select. You can use model for scenario			
 				'headerLabel' => 'Model Header Label',							//your modal title,as your set.	
 				'modal-size'=>'modal-lg'										//size of modal (modal-xs,modal-sm,modal-sm,modal-lg).
 			],
@@ -140,7 +149,14 @@ See the demos/ folder for all the examples.
 			'options'=>[
 				'id'=> 'calendar_test',											//set it, if used FullcalendarScheduler more the one on page.
 				'language'=>'id',
-			],	
+			],
+			'optionsEventAdd'=>[
+				'events' => Url::to(['/test/event-calendar-schedule']),			//should be set "your Controller link" 	
+				'resources'=> Url::to(['/test/resource-calendar-schedule']),		//should be set "your Controller link" 
+				//disable 'eventDrop' => new JsExpression($JSDropEvent),
+				'eventDropUrl'=>'/test/drop-child',								//should be set "your Controller link" to get(start,end) from select. You can use model for scenario.
+				'eventSelectUrl'=>'/test/form',								//should be set "your Controller link" to get(start,end) from select. You can use model for scenario			
+			],				
 			'clientOptions' => [
 				'language'=>'id',
 				'selectable' => true,

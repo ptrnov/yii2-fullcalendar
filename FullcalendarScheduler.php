@@ -24,24 +24,13 @@ class FullcalendarScheduler extends \yii\base\Widget
 		'editable' => false,
 	];
 	/**
-	 * Direct Event json data 
-	 * @var array  Array containing the events, can be JSON array, 
-	 * PHP array or URL that returns an array containing JSON events
-	 */
-	public $events = [];
-	
-	 /**
-     * Will hold an url to json formatted events!
-     * @var url to json service
-     */
-    public $ajaxEvents = NULL;
-	
-	/**
-	 * Direct resources parent with json data 
-	 * @var array  Array containing the resources.
-	 */
-	public $resources = [];
-	/** @var boolean  Determines whether or not to include the gcal.js */
+	 * @var string url controller Drop url.
+	 */	
+	public $optionsEventAdd=[
+		'eventDropUrl'=>'',			//@var string url controler save drop move select.
+		'events' =>[],				//@var array  Array containing the events, can be JSON array,PHP array or URL that returns an array containing JSON events
+		'resources'=>[],			//@var array  Array containing the resources.
+	];
 	
 	/*JS google Calendar*/
 	public $googleCalendar = false;
@@ -74,7 +63,6 @@ class FullcalendarScheduler extends \yii\base\Widget
 	 * @var boolean, ThemeAsset bundle
 	 */
 	public $theme = false;
-
 	
 	/**
 	 * Modal Form, 'SELECT INPUT' for fullcalendar schedule
@@ -95,7 +83,6 @@ class FullcalendarScheduler extends \yii\base\Widget
 	public $modalSelect=[
 		'id'=> 'modal-select',
 		'id_content'=>'modalSelectContent',
-		'url'=>'',
 		'headerLabel' => 'Model Header Label',		
 		'modal-size'=>'modal-sm',
 	];
@@ -197,43 +184,50 @@ class FullcalendarScheduler extends \yii\base\Widget
 			if (!isset($this->modalSelect['id_content'])) {
 				$this->modalSelect['id_content'] = 'modalContent';
 			}
-			if (!isset($this->modalSelect['url'])) {
-				$this->modalSelect['url'] = '/fullcalendar/test/test-form';
+			if(!isset($this->optionsEventAdd['eventSelectUrl'])){
+				$optionsEventAdd['eventSelectUrl'] = '/fullcalendar/test/test-form';
 			}
+						
 			//input Event Select
 			$options['select'] =new JsExpression("function(start,end,jsEvent,view){
 					var dateTime2 = new Date(end);
 					var dateTime1 = new Date(start);
 					var tgl1 = moment(dateTime1).format('YYYY-MM-DD');
 					var tgl2 = moment(dateTime2).subtract(1, 'days').format('YYYY-MM-DD');
-					$.get('".$this->modalSelect['url']."',{'start':tgl1,'end':tgl2},function(data){
+					$.get('".$this->optionsEventAdd['eventSelectUrl']."',{'start':tgl1,'end':tgl2},function(data){
 						$('#".$this->modalSelect['id']."').modal('show').find('#".$this->modalSelect['id_content']."').html(data);
 					});
 				}
 			");
+			
+			if(!isset($this->optionsEventAdd['eventDropUrl'])){
+				$this->optionsEventAdd['eventDropUrl'] = $this->eventDropUrl;
+			}			
 			//input Event Drop
-			// $options['eventDrop'] =new JsExpression("function(event, element, view){
-					// var child = event.parent;
-					// var status = event.status;
+			$options['eventDrop'] =new JsExpression("function(event, element, view){
+					var child = event.parent;
+					var status = event.status;
 
-					// var dateTime2 = new Date(event.end);
-					// var dateTime1 = new Date(event.start);
-					// var tgl1 = moment(dateTime1).format('YYYY-MM-DD');
-					// var tgl2 = moment(dateTime2).subtract(1, 'days').format('YYYY-MM-DD');
+					var dateTime2 = new Date(event.end);
+					var dateTime1 = new Date(event.start);
+					var tgl1 = moment(dateTime1).format('YYYY-MM-DD');
+					var tgl2 = moment(dateTime2).subtract(1, 'days').format('YYYY-MM-DD');
 
-					// var id = event.id;
-					// if(child != 0 && status != 1){
-						// $.get('/widget/pilotproject/drop-child',{'id':id,'start':tgl1,'end':tgl2});
-					// }
-				// }
-			// ");	
+					var id = event.id;
+					if(child != 0 && status != 1){
+						$.get('".$this->optionsEventAdd['eventDropUrl']."',{'id':id,'start':tgl1,'end':tgl2});
+					}
+				}
+			");	
 		}
 		
 		// Load the events
-		if(!isset($this->options['events'])){
-			$options['events'] = $this->events;
+		if(isset($this->optionsEventAdd['events'])){
+			$options['events'] = $this->optionsEventAdd['events'];
+		}
+		if(isset($this->optionsEventAdd['resources'])){
+			$options['resources'] = $this->optionsEventAdd['resources'];
 		}			
-		$options['resources'] = $this->resources;
 		$options = array_merge($options, $this->clientOptions);
 
 		return Json::encode($options);
