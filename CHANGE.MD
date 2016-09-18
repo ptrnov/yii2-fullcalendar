@@ -6,7 +6,7 @@ Change Log: `yii2-fullcalendar-scheduler`
 1. (enh): Modal select fullcalendar scheduler, controller link
 2. (rem): asset on bower.
 3. (enh): asset on local vendor.
-4. (enh): optionsEventAdd, controller link
+4. (enh): optionsEventAdd, controller link (event,source,drop,select)
 
 
 ## Version 1.0.0

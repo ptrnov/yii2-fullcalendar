@@ -27,11 +27,6 @@ class FullcalendarScheduler extends \yii\base\Widget
 	public $events = [];
 	
 	/**
-	 * @var string url controller Drop url.
-	 */	
-	public $eventDropUrl = NULL;
-	
-	/**
      * Will hold an url to json formatted events!
      * @var url to json service
      */
@@ -203,7 +198,7 @@ class FullcalendarScheduler extends \yii\base\Widget
         if ($this->eventAfterAllRender){
             $options['eventAfterAllRender'] = new JsExpression($this->eventAfterAllRender);
         }
-		$options['events'] =
+		
 		// Load the events
 		$options['events'] = $this->events;
 		$options['resources'] = $this->resources;
