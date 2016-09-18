@@ -1,5 +1,5 @@
 {
-  "name": "ptrnov/yii2-fullcalendar",
+  "name": "ptrnov/yii2-scheduler-fullcalendar",
   "description": "Yii2 fullcalendar scheduler widget",
   "require": {
     "php": ">=5.4.0",
