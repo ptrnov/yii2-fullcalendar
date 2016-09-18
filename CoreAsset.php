@@ -4,7 +4,7 @@ namespace ptrnov\fullcalendar;
 
 /**
  * Class CoreAsset
- * @package ptrnov\fullcalendarscheduler
+ * @package ptrnov\fullcalendarscheduler\assets
  */
 class CoreAsset extends \yii\web\AssetBundle
 {

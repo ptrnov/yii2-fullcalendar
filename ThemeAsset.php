@@ -4,7 +4,7 @@ namespace ptrnov\fullcalendar;
 
 /**
  * Class ThemeAsset
- * @package edofre\fullcalendarscheduler
+ * @package ptrnov\fullcalendarscheduler\assets
  */
 class ThemeAsset extends \yii\web\AssetBundle
 {

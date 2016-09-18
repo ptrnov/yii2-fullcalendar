@@ -200,6 +200,7 @@ class FullcalendarScheduler extends \yii\base\Widget
 			if (!isset($this->modalSelect['url'])) {
 				$this->modalSelect['url'] = '/fullcalendar/test/test-form';
 			}
+			//input Event Select
 			$options['select'] =new JsExpression("function(start,end,jsEvent,view){
 					var dateTime2 = new Date(end);
 					var dateTime1 = new Date(start);
@@ -208,6 +209,22 @@ class FullcalendarScheduler extends \yii\base\Widget
 					$.get('".$this->modalSelect['url']."',{'start':tgl1,'end':tgl2},function(data){
 						$('#".$this->modalSelect['id']."').modal('show').find('#".$this->modalSelect['id_content']."').html(data);
 					});
+				}
+			");
+			//input Event Drop
+			$options['eventDrop'] =new JsExpression("function(event, element, view){
+					var child = event.parent;
+					var status = event.status;
+
+					var dateTime2 = new Date(event.end);
+					var dateTime1 = new Date(event.start);
+					var tgl1 = moment(dateTime1).format('YYYY-MM-DD');
+					var tgl2 = moment(dateTime2).subtract(1, 'days').format('YYYY-MM-DD');
+
+					var id = event.id;
+					if(child != 0 && status != 1){
+						$.get('/widget/pilotproject/drop-child',{'id':id,'start':tgl1,'end':tgl2});
+					}
 				}
 			");	
 		}

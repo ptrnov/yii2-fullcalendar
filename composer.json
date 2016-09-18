@@ -1,6 +1,6 @@
 {
   "name": "ptrnov/yii2-fullcalendar",
-  "description": "Yii2 widget for fullcalendar scheduler module",
+  "description": "Yii2 fullcalendar scheduler widget",
   "require": {
     "php": ">=5.5.0",
     "yiisoft/yii2": "*",
