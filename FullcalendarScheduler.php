@@ -30,6 +30,12 @@ class FullcalendarScheduler extends \yii\base\Widget
 	 */
 	public $events = [];
 	
+	 /**
+     * Will hold an url to json formatted events!
+     * @var url to json service
+     */
+    public $ajaxEvents = NULL;
+	
 	/**
 	 * Direct resources parent with json data 
 	 * @var array  Array containing the resources.
@@ -182,6 +188,7 @@ class FullcalendarScheduler extends \yii\base\Widget
 		$options['loading'] = new JsExpression("function(isLoading, view ) {
 			jQuery('#{$this->options['id']}').find('.fc-loading').toggle(isLoading);
         }");
+		
 		if (!isset($options['select'])) {
 			//MODAL SELECT FULLCALENDAR SCHEDULE
 			if (!isset($this->modalSelect['id'])) {
@@ -205,8 +212,10 @@ class FullcalendarScheduler extends \yii\base\Widget
 			");	
 		}
 		
-		// Load the events		
-		$options['events'] = $this->events;
+		// Load the events
+		if(!isset($this->options['events'])){
+			$options['events'] = $this->events;
+		}			
 		$options['resources'] = $this->resources;
 		$options = array_merge($options, $this->clientOptions);
 

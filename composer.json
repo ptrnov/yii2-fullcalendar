@@ -12,7 +12,11 @@
     "scheduler",
     "javascript",
     "event",
-    "calendar"
+    "calendar",
+	"ptrnov",
+	"ptr",
+	"nov",
+	"yii2"
   ],
   "homepage": "https://github.com/ptrnov/yii2-fullcalendar",
   "type": "yii2-extension",

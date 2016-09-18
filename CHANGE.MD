@@ -1,6 +1,13 @@
 Change Log: `yii2-fullcalendar-scheduler`
 =========================================
 
+## Version 1.1.0
+**Date:** 19-September-2016
+1. (enh): Modal select fullcalendar scheduler, controller link
+2. (rem): asset on bower.
+3. (enh): asset on local vendor.
+
+
 ## Version 1.0.0
 1. Starting fullcalendar-scheduler, asset,widget bulding.
 	

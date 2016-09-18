@@ -24,161 +24,167 @@ See the demos/ folder for all the examples.
 
 ### Simple usage with array data
 ```php
-<?= \ptrnov\fullcalendar\FullcalendarSchedule::widget([
-	'header'        => [
-		'left'   => 'today prev,next',
-		'center' => 'title',
-		'right'  => 'timelineDay,timelineThreeDays,agendaWeek,month',
-	],
-	'clientOptions' => [
-		'now'               => '2016-05-07',
-		'editable'          => true, // enable draggable events
-		'aspectRatio'       => 1.8,
-		'scrollTime'        => '00:00', // undo default 6am scrollTime
-		'defaultView'       => 'timelineDay',
-		'views'             => [
-			'timelineThreeDays' => [
-				'type'     => 'timeline',
-				'duration' => [
-					'days' => 3,
+	//==Create file: Controllers/TestControllers.php
+	//==paste script below
+	namespace app\controllers;
+	use Yii;
+	use yii\web\Controller;
+	use yii\helpers\ArrayHelper;
+	use yii\web\Response;
+	use yii\widgets\ActiveForm;
+	use yii\helpers\Json;
+	class TestController extends Controller
+	{
+		public function actionIndex()
+		{
+				return $this->render('index');    
+		}
+		
+		public function actionForm($start,$end)
+		{
+			return $this->renderAjax('form',[
+				'start'=>$start,
+				'end'=>$end
+			]);
+		}
+		
+		public function actionEventCalendarSchedule()
+		{
+			$aryEvent=[
+					['id' => '1', 'resourceId' => 'b', 'start' => '2016-05-07T02:00:00', 'end' => '2016-05-07T07:00:00', 'title' => 'event 1'],
+					['id' => '2', 'resourceId' => 'c', 'start' => '2016-05-07T05:00:00', 'end' => '2016-05-07T22:00:00', 'title' => 'event 2'],
+					['id' => '3', 'resourceId' => 'd', 'start' => '2016-05-06', 'end' => '2016-05-08', 'title' => 'event 3'],
+					['id' => '4', 'resourceId' => 'e', 'start' => '2016-05-07T03:00:00', 'end' => '2016-05-07T08:00:00', 'title' => 'event 4'],
+					['id' => '5', 'resourceId' => 'f', 'start' => '2016-05-07T00:30:00', 'end' => '2016-05-07T02:30:00', 'title' => 'event 5'],
+			];
+			
+			return Json::encode($aryEvent);
+		}
+		
+		public function actionResourceCalendarSchedule()
+		{
+			$aryResource=[
+					['id' => 'a', 'title' => 'Daily Report'],
+					['id' => 'b', 'title' => 'Auditorium B', 'eventColor' => 'green'],
+					['id' => 'c', 'title' => 'Auditorium C', 'eventColor' => 'orange'],
+					[
+						'id'       => 'd', 'title' => 'Auditorium D',
+						'children' => [
+							['id' => 'd1', 'title' => 'Room D1'],
+							['id' => 'd2', 'title' => 'Room D2'],
+						],
+					],
+					['id' => 'e', 'title' => 'Auditorium E'],
+					['id' => 'f', 'title' => 'Auditorium F', 'eventColor' => 'red'],
+					['id' => 'g', 'title' => 'Auditorium G'],
+					['id' => 'h', 'title' => 'Auditorium H'],
+					['id' => 'i', 'title' => 'Auditorium I'],
+					['id' => 'j', 'title' => 'Auditorium J'],
+					['id' => 'k', 'title' => 'Auditorium K'],
+					['id' => 'l', 'title' => 'Auditorium L'],
+					['id' => 'm', 'title' => 'Auditorium M'],
+					['id' => 'n', 'title' => 'Auditorium N'],
+					['id' => 'o', 'title' => 'Auditorium O'],
+					['id' => 'p', 'title' => 'Auditorium P'],
+					['id' => 'q', 'title' => 'Auditorium Q'],
+					['id' => 'r', 'title' => 'Auditorium R'],
+					['id' => 's', 'title' => 'Auditorium S'],
+					['id' => 't', 'title' => 'Auditorium T'],
+					['id' => 'u', 'title' => 'Auditorium U'],
+					['id' => 'v', 'title' => 'Auditorium V'],
+					['id' => 'w', 'title' => 'Auditorium W'],
+					['id' => 'x', 'title' => 'Auditorium X'],
+					['id' => 'y', 'title' => 'Auditorium Y'],
+					['id' => 'z', 'title' => 'Auditorium Z'],
+				];
+			
+			return Json::encode($aryResource);
+		}
+	
+	}
+	
+	//==Create file: views/test/index.php
+	//==paste script below	
+	<?
+		use yii\helpers\Html;
+		use yii\helpers\Url;
+		use yii\bootstrap\Modal;
+		use yii\web\JsExpression;
+		use ptrnov\fullcalendar\FullcalendarScheduler;
+
+		$JSEventClick = <<<EOF
+			function(calEvent, jsEvent, view) {
+				alert('test');
+			}
+	EOF;
+
+		$wgCalendar=FullcalendarScheduler::widget([		
+			'modalSelect'=>[
+				/**
+				 * modalSelect for cell Select
+				 * 'clientOptions' => ['selectable' => true]					//makseure set true.
+				 * 'clientOptions' => ['select' => function or JsExpression] 	//makseure disable/empty. if set it, used JsExpressio to callback.			
+				 * @author piter novian [ptr.nov@gmail.com]		 				//"https://github.com/ptrnov/yii2-fullcalendar".
+				*/
+				'id' => 'modal-select',											//set it, if used FullcalendarScheduler more the one on page.
+				'id_content'=>'modalContent',									//set it, if used FullcalendarScheduler more the one on page.
+				'url'=>'/test/form',											//should be set "your Controller link" to get(start,end) from select. You can use model for scenario			
+				'headerLabel' => 'Model Header Label',							//your modal title,as your set.	
+				'modal-size'=>'modal-lg'										//size of modal (modal-xs,modal-sm,modal-sm,modal-lg).
+			],
+			'header'        => [
+				'left'   => 'today prev,next',
+				'center' => 'title',
+				'right'  => 'timelineOneDays,agendaWeek,month,listWeek',
+			],
+			'options'=>[
+				'id'=> 'calendar_test',											//set it, if used FullcalendarScheduler more the one on page.
+				'language'=>'id',
+			],	
+			'clientOptions' => [
+				'language'=>'id',
+				'selectable' => true,
+				'selectHelper' => true,
+				'droppable' => true,
+				'editable' => true,
+				//'select' => new JsExpression($JSCode),						// don't set if used "modalSelect"
+				'eventClick' => new JsExpression($JSEventClick),
+				'now' => '2016-05-07',
+				'firstDay' =>'0',
+				'theme'=> true,
+				'aspectRatio'=> 1.8,
+				//'scrollTime'=> '00:00', // undo default 6am scrollTime
+				'defaultView'=> 'timelineMonth',//'timelineDay',//agendaDay',
+				'views'=> [
+					'timelineOneDays' => [
+						'type'     => 'timeline',
+						'duration' => [
+							'days' => 1,
+						],
+					], 
+				
+				],				
+				'resourceLabelText' => 'Discriptions',
+				'resourceColumns'=>[
+						[
+							'labelText'=> 'Parent',
+							'field'=> 'title'
+						],
+						[
+							'labelText'=> 'Subject',
+							'field'=> 'title'
+						],
+						[
+							'labelText'=> 'Occupancy',
+							'field'=> 'create_at'
+						]
 				],
-			],
-		],
-		'resourceLabelText' => 'Rooms',
-		'resources'         => [
-			['id' => 'a', 'title' => 'Auditorium A'],
-			['id' => 'b', 'title' => 'Auditorium B', 'eventColor' => 'green'],
-			['id' => 'c', 'title' => 'Auditorium C', 'eventColor' => 'orange'],
-			[
-				'id'       => 'd', 'title' => 'Auditorium D',
-				'children' => [
-					['id' => 'd1', 'title' => 'Room D1'],
-					['id' => 'd2', 'title' => 'Room D2'],
-				],
-			],
-			['id' => 'e', 'title' => 'Auditorium E'],
-			['id' => 'f', 'title' => 'Auditorium F', 'eventColor' => 'red'],
-			['id' => 'g', 'title' => 'Auditorium G'],
-			['id' => 'h', 'title' => 'Auditorium H'],
-			['id' => 'i', 'title' => 'Auditorium I'],
-			['id' => 'j', 'title' => 'Auditorium J'],
-			['id' => 'k', 'title' => 'Auditorium K'],
-			['id' => 'l', 'title' => 'Auditorium L'],
-			['id' => 'm', 'title' => 'Auditorium M'],
-			['id' => 'n', 'title' => 'Auditorium N'],
-			['id' => 'o', 'title' => 'Auditorium O'],
-			['id' => 'p', 'title' => 'Auditorium P'],
-			['id' => 'q', 'title' => 'Auditorium Q'],
-			['id' => 'r', 'title' => 'Auditorium R'],
-			['id' => 's', 'title' => 'Auditorium S'],
-			['id' => 't', 'title' => 'Auditorium T'],
-			['id' => 'u', 'title' => 'Auditorium U'],
-			['id' => 'v', 'title' => 'Auditorium V'],
-			['id' => 'w', 'title' => 'Auditorium W'],
-			['id' => 'x', 'title' => 'Auditorium X'],
-			['id' => 'y', 'title' => 'Auditorium Y'],
-			['id' => 'z', 'title' => 'Auditorium Z'],
-		],
-		'events'            => [
-			['id' => '1', 'resourceId' => 'b', 'start' => '2016-05-07T02:00:00', 'end' => '2016-05-07T07:00:00', 'title' => 'event 1'],
-			['id' => '2', 'resourceId' => 'c', 'start' => '2016-05-07T05:00:00', 'end' => '2016-05-07T22:00:00', 'title' => 'event 2'],
-			['id' => '3', 'resourceId' => 'd', 'start' => '2016-05-06', 'end' => '2016-05-08', 'title' => 'event 3'],
-			['id' => '4', 'resourceId' => 'e', 'start' => '2016-05-07T03:00:00', 'end' => '2016-05-07T08:00:00', 'title' => 'event 4'],
-			['id' => '5', 'resourceId' => 'f', 'start' => '2016-05-07T00:30:00', 'end' => '2016-05-07T02:30:00', 'title' => 'event 5'],
-		],
-	],
-]);
-?>
-```
+				'resources'=> Url::to(['/test/resource-calendar-schedule']),		//should be set "your Controller link" 
+				'events' => Url::to(['/test/event-calendar-schedule']),				//should be set "your Controller link" 	
+			],	
+		
+		]);	
+	?>
+	<?=$wgCalendar?>
 
-### Simple use with JSON data from controller actions
-```php
-<?= \ptrnov\fullcalendar\FullcalendarSchedule::widget([
-	'header'        => [
-		'left'   => 'today prev,next',
-		'center' => 'title',
-		'right'  => 'timelineDay,timelineThreeDays,agendaWeek,month',
-	],
-	'clientOptions' => [
-		'now'               => '2016-05-07',
-		'editable'          => true, // enable draggable events
-		'aspectRatio'       => 1.8,
-		'scrollTime'        => '00:00', // undo default 6am scrollTime
-		'defaultView'       => 'timelineDay',
-		'views'             => [
-			'timelineThreeDays' => [
-				'type'     => 'timeline',
-				'duration' => ['days' => 3],
-			],
-		],
-		'resourceLabelText' => 'Rooms',
-		'resources'         => \yii\helpers\Url::to(['scheduler/resources', 'id' => 1]),
-		'events'            => \yii\helpers\Url::to(['scheduler/events', 'id' => 2]),
-	],
-]);
-?>
-```
-
-#### Controller actions (Controller is also included in the demos/json/ directory)
-```php
-/**
- * @param $id
- * @return array
- */
-public function actionResources($id)
-{
-    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
-    return [
-        new Resource(["id" => "a", "title" => "Auditorium A"]),
-        new Resource(["id" => "b", "title" => "Auditorium B", "eventColor" => "green"]),
-        new Resource(["id" => "c", "title" => "Auditorium C", "eventColor" => "orange"]),
-        new Resource([
-            "id" => "d", "title" => "Auditorium D", "children" => [
-                new Resource(["id" => "d1", "title" => "Room D1"]),
-                new Resource(["id" => "d2", "title" => "Room D2"]),
-            ],
-        ]),
-        new Resource(["id" => "e", "title" => "Auditorium E"]),
-        new Resource(["id" => "f", "title" => "Auditorium F", "eventColor" => "red"]),
-        new Resource(["id" => "g", "title" => "Auditorium G"]),
-        new Resource(["id" => "h", "title" => "Auditorium H"]),
-        new Resource(["id" => "i", "title" => "Auditorium I"]),
-        new Resource(["id" => "j", "title" => "Auditorium J"]),
-        new Resource(["id" => "k", "title" => "Auditorium K"]),
-        new Resource(["id" => "l", "title" => "Auditorium L"]),
-        new Resource(["id" => "m", "title" => "Auditorium M"]),
-        new Resource(["id" => "n", "title" => "Auditorium N"]),
-        new Resource(["id" => "o", "title" => "Auditorium O"]),
-        new Resource(["id" => "p", "title" => "Auditorium P"]),
-        new Resource(["id" => "q", "title" => "Auditorium Q"]),
-        new Resource(["id" => "r", "title" => "Auditorium R"]),
-        new Resource(["id" => "s", "title" => "Auditorium S"]),
-        new Resource(["id" => "t", "title" => "Auditorium T"]),
-        new Resource(["id" => "u", "title" => "Auditorium U"]),
-        new Resource(["id" => "v", "title" => "Auditorium V"]),
-        new Resource(["id" => "w", "title" => "Auditorium W"]),
-        new Resource(["id" => "x", "title" => "Auditorium X"]),
-        new Resource(["id" => "y", "title" => "Auditorium Y"]),
-        new Resource(["id" => "z", "title" => "Auditorium Z"]),
-    ];
-}
-
-/**
- * @param $id
- * @param $start
- * @param $end
- * @return array
- */
-public function actionEvents($id, $start, $end)
-{
-    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-    return [
-        new Event(["id" => "1", "resourceId" => "b", "start" => "2016-05-07T02:00:00", "end" => "2016-05-07T07:00:00", "title" => "event 1"]),
-        new Event(["id" => "2", "resourceId" => "c", "start" => "2016-05-07T05:00:00", "end" => "2016-05-07T22:00:00", "title" => "event 2"]),
-        new Event(["id" => "3", "resourceId" => "d", "start" => "2016-05-06", "end" => "2016-05-08", "title" => "event 3"]),
-        new Event(["id" => "4", "resourceId" => "e", "start" => "2016-05-07T03:00:00", "end" => "2016-05-07T08:00:00", "title" => "event 4"]),
-        new Event(["id" => "5", "resourceId" => "f", "start" => "2016-05-07T00:30:00", "end" => "2016-05-07T02:30:00", "title" => "event 5"]),
-    ];
-}
 ```
