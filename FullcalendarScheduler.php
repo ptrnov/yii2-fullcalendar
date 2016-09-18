@@ -10,12 +10,13 @@ use yii\web\View;
 
 /**
  * Class FullcalendarScheduler
- * @package edofre\fullcalendarscheduler
+ * @author piter novian [ptr.nov@gmail.com]
  */
 class FullcalendarScheduler extends \yii\base\Widget
 {
 	/**
-	 * @var array  The fullcalendar options, for all available options check http://fullcalendar.io/docs/
+	 * @var array  The fullcalendar options
+	 * Reff http://fullcalendar.io/docs/
 	 */
 	public $clientOptions = [
 		'weekends' => true,
@@ -23,41 +24,38 @@ class FullcalendarScheduler extends \yii\base\Widget
 		'editable' => false,
 	];
 	/**
-	 * @var array  Array containing the events, can be JSON array, PHP array or URL that returns an array containing JSON events
+	 * Direct Event json data 
+	 * @var array  Array containing the events, can be JSON array, 
+	 * PHP array or URL that returns an array containing JSON events
 	 */
 	public $events = [];
+	
 	/**
-	 * @var array  Array containing the resources, can be JSON array, PHP array or URL that returns an array containing JSON resources
+	 * Direct resources parent with json data 
+	 * @var array  Array containing the resources.
 	 */
 	public $resources = [];
 	/** @var boolean  Determines whether or not to include the gcal.js */
+	
+	/*JS google Calendar*/
 	public $googleCalendar = false;
+	
 	/**
 	 * @var array
 	 * Possible header keys
-	 * - center
-	 * - left
-	 * - right
+	 * - center|- left| - right
 	 * Possible options:
-	 * - title
-	 * - prevYear
-	 * - nextYear
-	 * - prev
-	 * - next
-	 * - today
-	 * - basicDay
-	 * - agendaDay
-	 * - basicWeek
-	 * - agendaWeek
-	 * - month
+	 * - title|- prevYear |- nextYear |- prev |- next |- today|- basicDay|- agendaDay|- basicWeek|- agendaWeek|- month
 	 */
 	public $header = [
 		'center' => 'title',
 		'left'   => 'prev,next, today',
 		'right'  => 'timelineDay,timelineWeek,timelineMonth,timelineYear',
 	];
+	
 	/** @var string  Text to display while the calendar is loading */
 	public $loading = 'Please wait, calendar is loading';
+	
 	/**
 	 * @var array  Default options for the id and class HTML attributes
 	 */
@@ -65,20 +63,59 @@ class FullcalendarScheduler extends \yii\base\Widget
 		'id'    => 'calendar',
 		'class' => 'fullcalendar',
 	];
+	
 	/**
-	 * @var boolean  Whether or not we need to include the ThemeAsset bundle
+	 * @var boolean, ThemeAsset bundle
 	 */
 	public $theme = false;
 
 	
+	/**
+	 * Modal Form, 'SELECT INPUT' for fullcalendar schedule
+	 * @var array
+	 * Example js select : JsExpression
+	 * $JSSelect = <<<EOF
+	 * 	function( start, end, jsEvent, view) {
+	 * 		//$.get('/fullcalendar/test/test-form',{'tgl1':tgl1,'tgl2':tgl2},function(data){
+	 * 		$.get('/fullcalendar/test/test-form',function(data){ // URL Controller render
+	 *			$('#modal-select').modal('show')				 // Id of Modal select
+	 *			.find('#modalContent')							 // Content Id rendered
+	 *			.html(data);									 
+	 *		});
+	 * 	}
+	 * * EOF;
+	 * @author piter novian [ptr.nov@gmail.com]
+	 */
 	public $modalSelect=[
-		'id'    => 'modal-select',
-		'headerLabel' => 'Model Header Label',
-		'id_content'=>'modalContent'
+		'id'=> 'modal-select',
+		'id_content'=>'modalSelectContent',
+		'url'=>'',
+		'headerLabel' => 'Model Header Label',		
+		'modal-size'=>'modal-sm',
 	];
 	
-	
-	
+	/**
+	 * Modal Form, 'CLICK SHOW' for fullcalendar schedule
+	 * @var array
+	 * Example click views : JsExpression
+	 * $JSEventClick = <<<EOF = <<<EOF
+	 *	 function( start, end, jsEvent, view) {
+	 * 		$.get('/fullcalendar/test/test-form',function(data){ 	// URL Controller render
+	 *			$('#modal-click').modal('show')				 		// Id of Modal click
+	 *			.find('#modalContent')								// Content Id rendered
+	 *			.html(data);									 
+	 *		});
+	 * 	}
+	 * EOF;
+	 * @author piter novian [ptr.nov@gmail.com]
+	 */
+	public $modalClick=[
+		'id'=> 'modal-click',
+		'headerLabel' => 'Model Click event - Header Label',
+		'id_content'=>'modalClickContent',
+		'modal-size'=>'modal-sm',
+	];
+		
 	/**
 	 * Always make sure we have a valid id and class for the Fullcalendar widget
 	 */
@@ -93,13 +130,12 @@ class FullcalendarScheduler extends \yii\base\Widget
 		if (isset($this->options['language'])) {
 			$this->options['class'] = $this->options['language'];
 		}
-
 		parent::init();
-		//print_r($this->clientOptions);
 	}
 
 	/**
-	 * Load the options and start the widget
+	 * Load the widget
+	 * @author piter novian [ptr.nov@gmail.com]
 	 */
 	public function run()
 	{
@@ -108,9 +144,7 @@ class FullcalendarScheduler extends \yii\base\Widget
 		echo Html::encode($this->loading);
 		echo Html::endTag('div') . "\n";
 		echo Html::endTag('div') . "\n";
-		$this->getSelectModal();
-		
-		
+		$this->getSelectModal();	
 		
 		$assets = CoreAsset::register($this->view);
 
@@ -140,6 +174,7 @@ class FullcalendarScheduler extends \yii\base\Widget
 	 * @return string
 	 * Returns an JSON array containing the fullcalendar options,
 	 * all available callbacks will be wrapped in JsExpressions objects if they're set
+	 * @author piter novian [ptr.nov@gmail.com]
 	 */
 	private function getClientOptions()
 	{
@@ -147,8 +182,30 @@ class FullcalendarScheduler extends \yii\base\Widget
 		$options['loading'] = new JsExpression("function(isLoading, view ) {
 			jQuery('#{$this->options['id']}').find('.fc-loading').toggle(isLoading);
         }");
-
-		// Load the events
+		if (!isset($options['select'])) {
+			//MODAL SELECT FULLCALENDAR SCHEDULE
+			if (!isset($this->modalSelect['id'])) {
+				$this->modalSelect['id'] = 'modal-select';
+			}
+			if (!isset($this->modalSelect['id_content'])) {
+				$this->modalSelect['id_content'] = 'modalContent';
+			}
+			if (!isset($this->modalSelect['url'])) {
+				$this->modalSelect['url'] = '/fullcalendar/test/test-form';
+			}
+			$options['select'] =new JsExpression("function(start,end,jsEvent,view){
+					var dateTime2 = new Date(end);
+					var dateTime1 = new Date(start);
+					var tgl1 = moment(dateTime1).format('YYYY-MM-DD');
+					var tgl2 = moment(dateTime2).subtract(1, 'days').format('YYYY-MM-DD');
+					$.get('".$this->modalSelect['url']."',{'start':tgl1,'end':tgl2},function(data){
+						$('#".$this->modalSelect['id']."').modal('show').find('#".$this->modalSelect['id_content']."').html(data);
+					});
+				}
+			");	
+		}
+		
+		// Load the events		
 		$options['events'] = $this->events;
 		$options['resources'] = $this->resources;
 		$options = array_merge($options, $this->clientOptions);
@@ -156,26 +213,36 @@ class FullcalendarScheduler extends \yii\base\Widget
 		return Json::encode($options);
 	}
 	
-	
+	/**
+	 * MODAL SELECT FULLCALENDAR SCHEDULE
+	 * Return String
+	 * @author piter novian [ptr.nov@gmail.com]
+	*/
 	private function getSelectModal(){
 		
 		if (!isset($this->modalSelect['id'])) {
 			$this->modalSelect['id'] = 'modal-select';
 		}
 		if (!isset($this->modalSelect['headerLabel'])) {
-			$this->modalSelect['headerLabel'] = 'Model Header Label';
+			$this->modalSelect['headerLabel'] = 'Modal Select event - Header Label';
 		}
 		if (!isset($this->modalSelect['id_content'])) {
 			$this->modalSelect['id_content'] = 'modalContent';
+		}
+		if (!isset($this->modalSelect['modal-size'])) {
+			$this->modalSelect['modal-size'] = 'modal-sm';
 		}	
-		
+	    		
 		$content = Modal::begin([
-			'header' => $this->modalSelect['headerLabel'],
+			'header' =>'<div style="float:left;margin-right:10px" class="fa fa-2x fa-calendar-plus-o"></div><div><h4 class="modal-title"> '. $this->modalSelect['headerLabel'].'</h4></div>',
 			'id' => $this->modalSelect['id'],
-			// 'size' => 'modal-sm',
+			'size' => $this->modalSelect['modal-size'],
+			'headerOptions'=>[		
+                 'style'=> 'border-radius:5px; background-color: rgba(90, 171, 255, 0.7)',		
+			],
 			//keeps from closing modal with esc key or by clicking out of the modal.
 			// user must click cancel or X to close
-			// 'clientOptions' => ['backdrop' => 'static', 'keyboard' => FALSE]
+			 'clientOptions' => ['backdrop' => 'static', 'keyboard' => FALSE]
 		]);
 		//echo '<div id="modalContent"></div>';
 		echo '<div id="'.$this->modalSelect['id_content'].'"></div>';
@@ -183,4 +250,38 @@ class FullcalendarScheduler extends \yii\base\Widget
 		return $content;
 	}
 
+	
+	
+	/**
+	 * MODAL CLICK FULLCALENDAR SCHEDULE
+	 * Return String
+	 * @author piter novian [ptr.nov@gmail.com]
+	*/
+	private function getClickModal(){
+		
+		if (!isset($this->modalClick['id'])) {
+			$this->modalClick['id'] = 'modal-select';
+		}
+		if (!isset($this->modalClick['headerLabel'])) {
+			$this->modalClick['headerLabel'] = 'Modal Click event - Header Label';
+		}
+		if (!isset($this->modalClick['id_content'])) {
+			$this->modalClick['id_content'] = 'modalClickContent';
+		}	
+		if (!isset($this->modalClick['modal-size'])) {
+			$this->modalClick['modal-size'] = 'modal-sm';
+		}
+		$content = Modal::begin([
+			'header' => $this->modalClick['headerLabel'],
+			'id' => $this->modalClick['id'],
+			'size' => $this->modalClick['modal-size'],
+			//keeps from closing modal with esc key or by clicking out of the modal.
+			// user must click cancel or X to close
+			 'clientOptions' => ['backdrop' => 'static', 'keyboard' => FALSE]
+		]);
+		//echo '<div id="modalContent"></div>';
+		echo '<div id="'.$this->modalClick['id_content'].'"></div>';
+		$content =  Modal::end();
+		return $content;
+	}
 }

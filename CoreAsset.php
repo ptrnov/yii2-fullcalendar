@@ -17,9 +17,9 @@ class CoreAsset extends \yii\web\AssetBundle
 	public $autoGenerate = true;
 	/** @var  array Required CSS files for the fullcalendar */
 	public $css = [
-		'fullcalendar-scheduler/lib/cupertino/jquery-ui.min.css',
-		'fullcalendar-scheduler/lib/fullcalendar.min.css',
-		'fullcalendar-scheduler/scheduler.css',
+		'css/cupertino/jquery-ui.min.css',
+		'css/fullcalendar.min.css',
+		'css/scheduler.css',
 	];
 	/** @var  array List of the dependencies this assets bundle requires */
 	public $depends = [
@@ -35,8 +35,8 @@ class CoreAsset extends \yii\web\AssetBundle
 	public $googleCalendar = false;
 	/** @var  array Required JS files for the fullcalendar */
 	public $js = [
-		'fullcalendar-scheduler/lib/fullcalendar.min.js',			
-		'fullcalendar-scheduler/scheduler.js',
+		'js/fullcalendar.min.js',			
+		'js/scheduler.js',
 		//'fullcalendar-scheduler/lib/lang-all.js',
 		//'fullcalendar-scheduler/lib/lang/id.js',
 		//'fullcalendar-scheduler/lib/jquery.min.js',
@@ -45,7 +45,8 @@ class CoreAsset extends \yii\web\AssetBundle
 	//public $language = null;
 	public $language = null;
 	/** @var  string Location of the fullcalendar scheduler distribution */
-	public $sourcePath = '@bower';
+	//public $sourcePath = '@bower';
+	public $sourcePath = '@vendor/ptrnov/yii2-fullcalendar/assets';
 
 	/**
 	 * @inheritdoc
