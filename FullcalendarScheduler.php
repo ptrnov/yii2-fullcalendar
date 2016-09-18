@@ -212,21 +212,21 @@ class FullcalendarScheduler extends \yii\base\Widget
 				}
 			");
 			//input Event Drop
-			$options['eventDrop'] =new JsExpression("function(event, element, view){
-					var child = event.parent;
-					var status = event.status;
+			// $options['eventDrop'] =new JsExpression("function(event, element, view){
+					// var child = event.parent;
+					// var status = event.status;
 
-					var dateTime2 = new Date(event.end);
-					var dateTime1 = new Date(event.start);
-					var tgl1 = moment(dateTime1).format('YYYY-MM-DD');
-					var tgl2 = moment(dateTime2).subtract(1, 'days').format('YYYY-MM-DD');
+					// var dateTime2 = new Date(event.end);
+					// var dateTime1 = new Date(event.start);
+					// var tgl1 = moment(dateTime1).format('YYYY-MM-DD');
+					// var tgl2 = moment(dateTime2).subtract(1, 'days').format('YYYY-MM-DD');
 
-					var id = event.id;
-					if(child != 0 && status != 1){
-						$.get('/widget/pilotproject/drop-child',{'id':id,'start':tgl1,'end':tgl2});
-					}
-				}
-			");	
+					// var id = event.id;
+					// if(child != 0 && status != 1){
+						// $.get('/widget/pilotproject/drop-child',{'id':id,'start':tgl1,'end':tgl2});
+					// }
+				// }
+			// ");	
 		}
 		
 		// Load the events
