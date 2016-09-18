@@ -80,8 +80,12 @@ class FullcalendarScheduler extends \yii\base\Widget
 		if (!isset($this->options['class'])) {
 			$this->options['class'] = 'fullcalendar';
 		}
+		if (isset($this->options['language'])) {
+			$this->options['class'] = $this->options['language'];
+		}
 
 		parent::init();
+		//print_r($this->clientOptions);
 	}
 
 	/**
@@ -106,12 +110,17 @@ class FullcalendarScheduler extends \yii\base\Widget
 			$assets->language = $this->options['language'];
 		}
 
+		/* if (isset($this->options['lang'])) 
+        {
+            $assets->language = $this->options['lang'];
+        }    */  
+		
 		$assets->googleCalendar = $this->googleCalendar;
 		$this->clientOptions['header'] = $this->header;
 
-		$this->view->registerJs(implode("\n", [
+		 $this->view->registerJs(implode("\n", [
 			"jQuery('#{$this->options['id']}').fullCalendar({$this->getClientOptions()});",
-		]), View::POS_READY);
+		]), View::POS_READY); 
 	}
 
 	/**
@@ -121,6 +130,7 @@ class FullcalendarScheduler extends \yii\base\Widget
 	 */
 	private function getClientOptions()
 	{
+		$id = $this->options['id'];
 		$options['loading'] = new JsExpression("function(isLoading, view ) {
 			jQuery('#{$this->options['id']}').find('.fc-loading').toggle(isLoading);
         }");
@@ -128,7 +138,7 @@ class FullcalendarScheduler extends \yii\base\Widget
 		// Load the events
 		$options['events'] = $this->events;
 		$options['resources'] = $this->resources;
-		$options = array_merge($options, $this->clientOptions);
+		$options = array_merge($options,$this->clientOptions);
 
 		return Json::encode($options);
 	}

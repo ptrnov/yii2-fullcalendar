@@ -10,8 +10,8 @@ class MomentAsset extends \yii\web\AssetBundle
 {
 	/** @var  array  The javascript file for the Moment library */
 	public $js = [
-		'moment.js',
+		'moment.min.js',
 	];
 	/** @var  string  The location of the Moment.js library */
-	public $sourcePath = '@bower/moment';
+	public $sourcePath = '@bower/fullcalendar-scheduler/lib/';
 }
