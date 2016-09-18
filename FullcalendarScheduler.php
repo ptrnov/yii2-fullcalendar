@@ -4,6 +4,7 @@ namespace ptrnov\fullcalendar;
 
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\bootstrap\Modal;
 use yii\web\JsExpression;
 use yii\web\View;
 
@@ -69,6 +70,15 @@ class FullcalendarScheduler extends \yii\base\Widget
 	 */
 	public $theme = false;
 
+	
+	public $modalSelect=[
+		'id'    => 'modal-select',
+		'headerLabel' => 'Model Header Label',
+		'id_content'=>'modalContent'
+	];
+	
+	
+	
 	/**
 	 * Always make sure we have a valid id and class for the Fullcalendar widget
 	 */
@@ -98,7 +108,10 @@ class FullcalendarScheduler extends \yii\base\Widget
 		echo Html::encode($this->loading);
 		echo Html::endTag('div') . "\n";
 		echo Html::endTag('div') . "\n";
-
+		$this->getSelectModal();
+		
+		
+		
 		$assets = CoreAsset::register($this->view);
 
 		// Register the theme
@@ -138,9 +151,36 @@ class FullcalendarScheduler extends \yii\base\Widget
 		// Load the events
 		$options['events'] = $this->events;
 		$options['resources'] = $this->resources;
-		$options = array_merge($options,$this->clientOptions);
+		$options = array_merge($options, $this->clientOptions);
 
 		return Json::encode($options);
+	}
+	
+	
+	private function getSelectModal(){
+		
+		if (!isset($this->modalSelect['id'])) {
+			$this->modalSelect['id'] = 'modal-select';
+		}
+		if (!isset($this->modalSelect['headerLabel'])) {
+			$this->modalSelect['headerLabel'] = 'Model Header Label';
+		}
+		if (!isset($this->modalSelect['id_content'])) {
+			$this->modalSelect['id_content'] = 'modalContent';
+		}	
+		
+		$content = Modal::begin([
+			'header' => $this->modalSelect['headerLabel'],
+			'id' => $this->modalSelect['id'],
+			// 'size' => 'modal-sm',
+			//keeps from closing modal with esc key or by clicking out of the modal.
+			// user must click cancel or X to close
+			// 'clientOptions' => ['backdrop' => 'static', 'keyboard' => FALSE]
+		]);
+		//echo '<div id="modalContent"></div>';
+		echo '<div id="'.$this->modalSelect['id_content'].'"></div>';
+		$content =  Modal::end();
+		return $content;
 	}
 
 }
